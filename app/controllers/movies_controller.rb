@@ -10,7 +10,11 @@ class MoviesController < ApplicationController
 	param_sort = params[:sort]
 	param_rating = params[:ratings]
     	@all_ratings = ['G','PG','PG-13','R']
+	@check_ratings = @all_ratings
 	@sort = param_sort
+	if session[:ratings]
+		@check_ratings = session[:ratings]
+	end
 	if !param_sort && session[:sort]
 		param_sort = session[:sort]
 		@sort = param_sort
@@ -18,12 +22,12 @@ class MoviesController < ApplicationController
 		session[:sort] = @sort
 	end
 	if param_rating
+		@check_ratings = param_rating.keys
 		session[:ratings] = param_rating.keys
 	else
-		redirect_to movies_path(:sort => @sort, :ratings => Hash[session[:ratings].map{|i| [i, 'checked']}])
+		redirect_to movies_path(:sort => @sort, :ratings => Hash[@check_ratings.map{|i| [i, 'checked']}]) 
 	end
-
-	@movies = Movie.find(:all, :order=>@sort, :conditions=> {:rating=>session[:ratings]})
+	@movies = Movie.find(:all, :order=>@sort, :conditions=> {:rating=>@check_ratings})
   end
 
   def new
