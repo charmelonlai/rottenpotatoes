@@ -20,7 +20,7 @@ class MoviesController < ApplicationController
 	if param_rating
 		session[:ratings] = param_rating.keys
 	else
-		redirect_to movies_path(:sort => @sort, :ratings => Hash[session[:ratings].map{|i| [i, 'checked']}])
+		redirect_to movies_path(:sort => @sort, :ratings =>Hash[session[:ratings].map{|i| [i, 'checked']}])
 	end
 
 	@movies = Movie.find(:all, :order=>@sort, :conditions=> {:rating=>session[:ratings]})
